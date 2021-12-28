@@ -3,13 +3,18 @@ import random
 from time import sleep
 from os import system, name
 
+
+CHAR_W = 30
+CHAR_H = 100
+
 def main():
     players = []
+    players.append(Player([11, 20], 0))
     players.append(Player([5, 6], 1))
-    players.append(Player([40, 20], 2))
+    players.append(Player([20, 10], 2))
     game = PlayGrid(players)
-    for i in range(1, 25):
-        sleep(3)
+    for i in range(1, 50):
+        sleep(.5)
         game.update("".join(["Iteration: ", str(i)]))
 
 class PlayGrid:
@@ -29,6 +34,7 @@ class PlayGrid:
     # Player Management
     def draw_players(self, grid):
         for player in self.players:
+            modifier = 0
             # True = right, False = left
             if player.facing == True:
                 modifier = 1
@@ -55,9 +61,9 @@ class PlayGrid:
     def empty_grid(self):
         self.grid = dict()
         str = ""
-        for row in range(1, 30):
+        for row in range(1, CHAR_W):
             str = ""
-            for i in range(1, 100):
+            for i in range(1, CHAR_H):
                 str += "`"
             self.grid[row] = str
 
@@ -91,13 +97,26 @@ class Player:
     def random_walk(self):
                 # 1 r, 2 l, 3 up, 4, down
         dir = random.choice([1, 2, 3, 4])
+        self.walk(dir)
+
+    def walk(self, dir):
         if dir == 1:
-            self.pos[0] += self.speed
+            if not self.pos[0] + self.speed >= CHAR_H - 1:
+                self.pos[0] += self.speed
+                self.facing = True
+
         elif dir == 2:
-            self.pos[0] -= self.speed
+            if not self.pos[0] - self.speed <= 2:
+                self.pos[0] -= self.speed
+                self.facing = False
+
         elif dir == 3:
-            self.pos[1] += self.speed
-        self.turns = 1
+            if not self.pos[0] - self.speed <= 2:
+                self.pos[1] -= self.speed
+        elif dir == 4:
+            if not self.pos[0] + self.speed >= CHAR_W - 1:
+                self.pos[1] += self.speed
+        self.turns += 1
 
 # Behaviors
     def attack_available(self, players):
@@ -107,6 +126,7 @@ class Player:
                     self.attacks_available.append(player.id)
                 elif abs(player.pos[1] - self.pos[1]) <= self.range:
                     self.attacks_available.append(player.id)
+
     def move(self, players):
          self.attacks_available = []
          self.blocking = False
@@ -129,15 +149,9 @@ class Player:
              self.attacking = True
              self.call_attack()
     def call_attack(self):
-        print("someone called an attack")
-
-
-
-
-
-
-
-
+        pass
+    def pursue(self):
+        pass
 
 
 def clear():
