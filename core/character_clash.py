@@ -89,23 +89,62 @@ class Player:
         self.pursuing = None
         self.attackavailable = False
         self.attacks_available = []
+        self.turns = 0
         # Base
-    def walk(self, pos):
-        pass
+    def random_walk(self):
+                # 1 r, 2 l, 3 up, 4, down
+        dir = random.choice([1, 2, 3, 4])
+        if dir == 1:
+            self.pos[0] += self.speed
+        elif dir == 2:
+            self.pos[0] -= self.speed
+        elif dir == 3:
+            self.pos[1] += self.speed
+        self.turns = 1
 
 # Behaviors
-    def attack_available():
+    def attack_available(self):
         pass
     def move(self, players):
          self.blocking = False
          self.attacking = False
-         for index, player in enumerate(players):
+         selection = 1
+         selections = []
+         param = ""
+         for player in players:
              if player.pos[1] == self.pos[1] and player.pos[0] == self.pos[0]:
                  pass
              else:
                  if attackavailable == True:
-                     if self.health > 45:
+                     # walk = 1, block = 2, attack = 3
+                     if self.health > 45 and index in attacks_available:
                          if player.attacking == True:
+                             selection = 3
+                             self.pursuing = index
+                         else:
+                             if player.health > 35 and self.health < 50:
+                                 self.pursuing = player.pos
+                                 selection = 2
+                 else:
+                     selection = random.choice([1, 2, 3])
+             selections.append(selection)
+         mu = sum(selections) / len(selections)
+         selection = int(round(mu))
+         if selection == 1:
+             if self.pursuing != None:
+                 self.pursue()
+             else:
+                 self.random_walk()
+         if selection == 2:
+              pass
+         if selection == 3:
+              pass
+
+
+
+
+
+
 
 
 
