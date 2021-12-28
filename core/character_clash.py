@@ -2,20 +2,24 @@ import click as clk
 import random
 from time import sleep
 from os import system, name
-
-
-CHAR_W = 30
-CHAR_H = 100
-
-def main():
-    players = []
-    players.append(Player([11, 20], 0))
-    players.append(Player([5, 6], 1))
-    players.append(Player([20, 10], 2))
+width = 100
+height = 30
+# CLIs
+@clk.command()
+@clk.option('--w', default = 100, help = 'Width of the draw grid.')
+@clk.option('--h', default = 30, help =' Height of draw grid.')
+@clk.option('--players', prompt='Number to simulate',
+              help='The number of randomly generated players to include.')
+def main(players, w, h):
+    players = random_players(int(players))
     game = PlayGrid(players)
-    for i in range(1, 50):
+    round_counter = 0
+    width = w
+    height = h
+    while len(players) > 1:
+        round_counter += 1
         sleep(.5)
-        game.update("".join(["Iteration: ", str(i)]))
+        game.update("".join(["Iteration: ", str(round_counter)]))
 
 class PlayGrid:
         # Essentials
@@ -34,6 +38,11 @@ class PlayGrid:
     # Player Management
     def draw_players(self, grid):
         for player in self.players:
+            if player.pos[0] > width or player.pos[0] < 1:
+                print("outtabound")
+            elif player.pos[1] > height or player.pos[0] < 1:
+                print(outtabound)
+
             modifier = 0
             # True = right, False = left
             if player.facing == True:
@@ -61,9 +70,9 @@ class PlayGrid:
     def empty_grid(self):
         self.grid = dict()
         str = ""
-        for row in range(1, CHAR_W):
+        for row in range(0, height + 1):
             str = ""
-            for i in range(1, CHAR_H):
+            for i in range(0, width + 1):
                 str += "`"
             self.grid[row] = str
 
@@ -101,7 +110,7 @@ class Player:
 
     def walk(self, dir):
         if dir == 1:
-            if not self.pos[0] + self.speed >= CHAR_H - 1:
+            if not self.pos[0] + self.speed >= height - 1:
                 self.pos[0] += self.speed
                 self.facing = True
 
@@ -114,7 +123,7 @@ class Player:
             if not self.pos[0] - self.speed <= 2:
                 self.pos[1] -= self.speed
         elif dir == 4:
-            if not self.pos[0] + self.speed >= CHAR_W - 1:
+            if not self.pos[0] + self.speed >= width - 1:
                 self.pos[1] += self.speed
         self.turns += 1
 
@@ -152,6 +161,14 @@ class Player:
         pass
     def pursue(self):
         pass
+
+def random_players(n_p):
+    players = []
+    for p in range(0, n_p):
+        pos = [random.randrange(1, width), random.randrange(1, height)]
+        player = Player(pos, p)
+        players.append(player)
+    return(players)
 
 
 def clear():
