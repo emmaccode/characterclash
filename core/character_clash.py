@@ -5,16 +5,12 @@ from os import system, name
 
 def main():
     players = []
-    players.append(Player([5, 6]))
+    players.append(Player([5, 6], 1))
+    players.append(Player([40, 20], 2))
     game = PlayGrid(players)
-    game.update("Up")
-#    while len(game.players) < 1:
-    sleep(2)
-    game.update("Down")
-    sleep(2)
-    game.update("Up")
-    sleep(2)
-    game.update("Down")
+    for i in range(1, 25):
+        sleep(3)
+        game.update("".join(["Iteration: ", str(i)]))
 
 class PlayGrid:
         # Essentials
@@ -73,7 +69,8 @@ stats_dict = {"o/" : [2, 25, 2, 3],
 "o)" : [2, 35, 3, 4],
 "o-" : [3, 20, 1, 2]}
 class Player:
-    def __init__(self, pos):
+    def __init__(self, pos, id):
+        self.id = id
         self.pos = pos
         self.health = 100
         self.blocking = True
@@ -103,43 +100,36 @@ class Player:
         self.turns = 1
 
 # Behaviors
-    def attack_available(self):
-        pass
+    def attack_available(self, players):
+        for player in players:
+            if player.pos[0] != self.pos[0] and self.pos[1] != player.pos[1]:
+                if abs(player.pos[0] - self.pos[0]) <= self.range:
+                    self.attacks_available.append(player.id)
+                elif abs(player.pos[1] - self.pos[1]) <= self.range:
+                    self.attacks_available.append(player.id)
     def move(self, players):
+         self.attacks_available = []
          self.blocking = False
          self.attacking = False
+         self.attack_available(players)
          selection = 1
-         selections = []
-         param = ""
-         for player in players:
-             if player.pos[1] == self.pos[1] and player.pos[0] == self.pos[0]:
-                 pass
-             else:
-                 if attackavailable == True:
-                     # walk = 1, block = 2, attack = 3
-                     if self.health > 45 and index in attacks_available:
-                         if player.attacking == True:
-                             selection = 3
-                             self.pursuing = index
-                         else:
-                             if player.health > 35 and self.health < 50:
-                                 self.pursuing = player.pos
-                                 selection = 2
-                 else:
-                     selection = random.choice([1, 2, 3])
-             selections.append(selection)
-         mu = sum(selections) / len(selections)
-         selection = int(round(mu))
+         selections = [1, 1, 1, 1, 2, 2]
+         if len(self.attacks_available) > 0:
+             selections.append(3)
+         selection = random.choice(selections)
          if selection == 1:
              if self.pursuing != None:
                  self.pursue()
              else:
                  self.random_walk()
          if selection == 2:
-              pass
+              self.blocking = True
+              self.turns += 1
          if selection == 3:
-              pass
-
+             self.attacking = True
+             self.call_attack()
+    def call_attack(self):
+        print("someone called an attack")
 
 
 
