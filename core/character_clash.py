@@ -71,7 +71,7 @@ class PlayGrid:
 
 stats_dict = {"o/" : [2, 25, 2, 3],
 "o)" : [2, 35, 3, 4],
-"o-" : [3, 20, 3, 2]}
+"o-" : [3, 20, 1, 2]}
 class Player:
     def __init__(self, pos):
         self.pos = pos
@@ -85,19 +85,31 @@ class Player:
         self.time = stats_dict[type][3]
         self.symbol = type
         self.facing = True
-
+        self.attacking = False
+        self.pursuing = None
+        self.attackavailable = False
+        self.attacks_available = []
+        # Base
     def walk(self, pos):
         pass
 
+# Behaviors
+    def attack_available():
+        pass
     def move(self, players):
-        if self.blocking == False:
-            self.pos[1] -= 1
-            self.blocking = True
-        elif self.blocking == True:
-            self.pos[1] += 1
-            self.blocking = False
+         self.blocking = False
+         self.attacking = False
+         for index, player in enumerate(players):
+             if player.pos[1] == self.pos[1] and player.pos[0] == self.pos[0]:
+                 pass
+             else:
+                 if attackavailable == True:
+                     if self.health > 45:
+                         if player.attacking == True:
 
-        # self.blocking = False
+
+
+
 
 def clear():
     if name == 'nt':
